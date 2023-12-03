@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from wallet.apps.auth.handlers import auth_router
 from wallet.base.config import settings_factory
 from wallet.stores.pg import get_pg_accessor
 
@@ -17,4 +16,3 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(auth_router)
