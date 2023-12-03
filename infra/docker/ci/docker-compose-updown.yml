@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  migrations:
+    build:
+      context: ../../..
+      dockerfile: infra/docker/ci/Dockerfile.migrations-updown
+    depends_on:
+      pg:
+        condition: service_healthy
+    environment:
+      USER: test
+      PSWD: test
+      HOST: pg:5432
+      DB: test
+
+  pg:
+    image: postgres:14-alpine
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    healthcheck:
+      test: pg_isready --dbname=test --username=test
+      interval: 5s
+      timeout: 5s
+      retries: 10
