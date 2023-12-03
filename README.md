@@ -55,7 +55,7 @@ Flow:
 1) git switch develop
 2) git update
 3) git checkout -b feature/xxx
-4) git add && git commit (message template: "issue-number: comment")
+4) git add && git commit (message template: "#issue-number: comment")
 5) Make PR
 6) Approve PR
 7) Merge branch to develop
