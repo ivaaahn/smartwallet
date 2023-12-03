@@ -1,0 +1,86 @@
+version: "3.9"
+
+services:
+  backend:
+    container_name: wallet-backend
+    ports:
+      - "8001:8000"
+    build:
+      context: ../../..
+      dockerfile: ./infra/docker/local/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      pg:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+  migrations:
+    container_name: wallet-migrations
+    build:
+      context: ../../..
+      dockerfile: ./infra/docker/local/Dockerfile.migrations
+    depends_on:
+      pg:
+        condition: service_healthy
+    environment:
+      USER: ${DB_USER}
+      PSWD: ${DB_PSWD}
+      HOST: wallet-pg:5432
+      DB: ${DB_NAME}
+
+  pg:
+    container_name: wallet-pg
+    image: postgres:14-alpine
+    expose:
+      - 5432
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PSWD}
+      POSTGRES_DB: ${DB_NAME}
+      PGDATA: "/data/lib/postgresql/data/pgdata"
+    volumes:
+      - pg_data_volume:/data/lib/postgresql/data
+    healthcheck:
+      test: pg_isready --dbname=$DB_NAME --username=$DB_USER
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  migrations_test:
+    container_name: wallet-migrations_test
+    build:
+      context: ../../..
+      dockerfile: ./infra/docker/local/Dockerfile.migrations
+    depends_on:
+      pg_test:
+        condition: service_healthy
+    environment:
+      USER: ${DB_USER}_test
+      PSWD: ${DB_PSWD}_test
+      HOST: wallet-pg_test:5432
+      DB: ${DB_NAME}_test
+
+  pg_test:
+    container_name: wallet-pg_test
+    image: postgres:14-alpine
+    expose:
+      - 5432
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}_test
+      POSTGRES_PASSWORD: ${DB_PSWD}_test
+      POSTGRES_DB: ${DB_NAME}_test
+    healthcheck:
+      test: pg_isready --dbname=${DB_NAME}_test --username=${DB_USER}_test
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  pg_data_volume:
