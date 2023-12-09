@@ -1,5 +1,6 @@
 # Установка зависимостей
 
+`python -m venv venv`
 `pip install -r requirements.txt`
 
 
@@ -15,7 +16,7 @@
 
 ## Локальное окружение
 
-**Требование:** наличие переменных окружения `etc/.env.local`
+**Требование:** наличие переменных окружения `etc/.env.local` и `infra/docker/local/.env`
 
 **Запуск БД и миграций:**  `docker-compose -f infra/docker/local/docker-compose.yml up --build migrations`
 
