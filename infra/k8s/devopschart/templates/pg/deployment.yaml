@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "devopschart.pg.labels" . | nindent 4 }}
+        {{- include "devopschart.pg.labels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ include "devopschart.fullname" . }}-pg

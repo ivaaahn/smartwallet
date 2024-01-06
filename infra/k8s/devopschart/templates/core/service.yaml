@@ -6,7 +6,7 @@ metadata:
     {{- include "devopschart.core.labels" . | nindent 4 }}
 spec:
   selector:
-    {{- include "devopschart.core.labels" . | nindent 4 }}
+    {{- include "devopschart.core.selectorLabels" . | nindent 6 }}
   ports:
     - protocol: TCP
       port: {{ .Values.core.servicePort }}

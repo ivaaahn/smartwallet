@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: {{ include "devopschart.fullname" . }}-core
 data:
-  {{ .Values.api.config.filename }}: |-
+  {{ .Values.core.config.fileName }}: |-
 {{ .Files.Get "configs/core/.env" | indent 4}}

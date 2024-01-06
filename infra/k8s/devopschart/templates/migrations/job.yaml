@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "devopschart.migrations.selectorLabels" . | nindent 4 }}
+        {{- include "devopschart.migrations.selectorLabels" . | nindent 8 }}
     spec:
       restartPolicy: Never
       containers:
