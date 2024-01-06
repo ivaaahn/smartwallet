@@ -23,21 +23,21 @@ variables:
   after_script:
     - docker push $IMAGE_NAME:$IMAGE_TAG
 
-build-core:
-  stage: build
-  extends: .build
-  variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/core
-    IMAGE_TAG: $CI_PIPELINE_IID
-    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile"
-
-build-migrations:
-  stage: build
-  extends: .build
-  variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/migrations
-    IMAGE_TAG: $CI_PIPELINE_IID
-    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile.migrations"
+#build-core:
+#  stage: build
+#  extends: .build
+#  variables:
+#    IMAGE_NAME: $CI_REGISTRY_IMAGE/core
+#    IMAGE_TAG: $CI_PIPELINE_IID
+#    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile"
+#
+#build-migrations:
+#  stage: build
+#  extends: .build
+#  variables:
+#    IMAGE_NAME: $CI_REGISTRY_IMAGE/migrations
+#    IMAGE_TAG: $CI_PIPELINE_IID
+#    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile.migrations"
 
 deploy:
   stage: deploy
@@ -67,7 +67,7 @@ deploy:
   script:
     - >
       helm upgrade --install devopschart infra/k8s/devopschart
-      --set core.image.tag=$CI_PIPELINE_IID
-      --set migrations.image.tag=$CI_PIPELINE_IID
+      --set core.image.tag=3
+      --set migrations.image.tag=3
       --set ingress.domain=$DOMAIN
       --wait
