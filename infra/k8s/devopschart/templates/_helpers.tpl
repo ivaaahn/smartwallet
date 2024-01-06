@@ -17,34 +17,34 @@
 {{- end }}
 
 
-{{- define "chart.core.labels" -}}
+{{- define "devopschart.core.labels" -}}
 app.kubernetes.io/name: {{ include "devopschart.fullname" . }}
 app.kubernetes.io/component: core
 {{- end }}
 
-{{- define "chart.core.selectorLabels" -}}
+{{- define "devopschart.core.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "devopschart.fullname" . }}
 app.kubernetes.io/component: core
 {{- end }}
 
 
-{{- define "chart.pg.labels" -}}
+{{- define "devopschart.pg.labels" -}}
 app.kubernetes.io/name: {{ include "devopschart.fullname" . }}
 app.kubernetes.io/component: pg
 {{- end }}
 
-{{- define "chart.pg.selectorLabels" -}}
+{{- define "devopschart.pg.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "devopschart.fullname" . }}
 app.kubernetes.io/component: pg
 {{- end }}
 
 
-{{- define "chart.migrations.labels" -}}
+{{- define "devopschart.migrations.labels" -}}
 app.kubernetes.io/name: {{ include "devopschart.fullname" . }}
 app.kubernetes.io/component: migrations
 {{- end }}
 
-{{- define "chart.migrations.selectorLabels" -}}
+{{- define "devopschart.migrations.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "devopschart.fullname" . }}
 app.kubernetes.io/component: migrations
 {{- end }}
