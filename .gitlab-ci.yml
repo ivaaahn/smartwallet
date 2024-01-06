@@ -65,7 +65,6 @@ deploy:
 #    - kubectl apply -f k8s/migrations/job.yaml
 #    - kubectl apply -f k8s/ingress.yaml
   script:
-    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
     - >
       helm upgrade --install devopschart infra/k8s/devopschart
       --set core.image.repository=$CI_REGISTRY_IMAGE/core
