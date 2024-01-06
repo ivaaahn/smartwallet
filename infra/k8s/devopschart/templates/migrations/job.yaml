@@ -18,4 +18,4 @@ spec:
         - name: {{ include "devopschart.fullname" . }}-migrations
           image: "{{ .Values.migrations.image.repository }}:{{ .Values.migrations.image.tag}}"
           args: ["up"]
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
