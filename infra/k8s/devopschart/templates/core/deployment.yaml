@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "devopschart.core.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "devopschart.core.selectorLabels" . | nindent 6 }}
