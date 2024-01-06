@@ -31,13 +31,13 @@ variables:
 #    IMAGE_TAG: $CI_PIPELINE_IID
 #    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile"
 #
-build-migrations:
-  stage: build
-  extends: .build
-  variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/migrations
-    IMAGE_TAG: $CI_PIPELINE_IID
-    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile.migrations"
+#build-migrations:
+#  stage: build
+#  extends: .build
+#  variables:
+#    IMAGE_NAME: $CI_REGISTRY_IMAGE/migrations
+#    IMAGE_TAG: $CI_PIPELINE_IID
+#    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile.migrations"
 
 deploy:
   stage: deploy
@@ -70,5 +70,5 @@ deploy:
       --set core.image.repository=$CI_REGISTRY_IMAGE/core
       --set migrations.image.repository=$CI_REGISTRY_IMAGE/migrations
       --set core.image.tag=3
-      --set migrations.image.tag=$CI_PIPELINE_IID
+      --set migrations.image.tag=22
       --wait
