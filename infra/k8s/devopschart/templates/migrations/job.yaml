@@ -17,6 +17,5 @@ spec:
       containers:
         - name: {{ include "devopschart.fullname" . }}-migrations
           image: "{{ .Values.migrations.image.repository }}:{{ .Values.migrations.image.tag}}"
-          command: ["/bin/sh", "-c"]
-          args: ["sleep 1"]
+          command: ["up"]
           imagePullPolicy: Always
