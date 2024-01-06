@@ -35,6 +35,7 @@ class PgAccessor:
 
     async def setup(self) -> Self:
         if not self._pool or self._pool.is_closing():
+            self._logger.info("Creating connection pool with dsn: %s", self._dsn)
             self._pool = await self.create_pool(self._dsn)
             self._logger.info("Connection pool created")
 

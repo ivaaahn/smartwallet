@@ -1,3 +1,4 @@
+import logging
 import os
 from functools import cache
 from typing import Annotated
@@ -11,6 +12,9 @@ if not CONFIG_PATH:
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         f"../etc/{os.environ.get("CONFIG_NAME", ".env.local")}",
     )
+
+logger = logging.getLogger(__file__)
+logger.info("Config path: %s", CONFIG_PATH)
 
 
 class Settings(BaseSettings):

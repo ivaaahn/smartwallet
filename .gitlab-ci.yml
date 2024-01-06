@@ -2,10 +2,6 @@ stages:
   - build
   - deploy
 
-variables:
-  CONFIG_PATH: docker/ci/.env
-
-
 .build:
   stage: build
   image: docker:dind
@@ -23,52 +19,38 @@ variables:
   after_script:
     - docker push $IMAGE_NAME:$IMAGE_TAG
 
-#build-core:
-#  stage: build
-#  extends: .build
-#  variables:
-#    IMAGE_NAME: $CI_REGISTRY_IMAGE/core
-#    IMAGE_TAG: $CI_PIPELINE_IID
-#    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile"
-#
-#build-migrations:
-#  stage: build
-#  extends: .build
-#  variables:
-#    IMAGE_NAME: $CI_REGISTRY_IMAGE/migrations
-#    IMAGE_TAG: $CI_PIPELINE_IID
-#    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile.migrations"
+build-core:
+  stage: build
+  extends: .build
+  variables:
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/core
+    IMAGE_TAG: $CI_PIPELINE_IID
+    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile"
+
+build-migrations:
+  stage: build
+  extends: .build
+  variables:
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/migrations
+    IMAGE_TAG: $CI_PIPELINE_IID
+    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile.migrations"
 
 deploy:
   stage: deploy
   image:
     name: dtzar/helm-kubectl:3.13.0
   before_script:
-    - echo $KUBECONFIG
     - >
       kubectl create secret docker-registry registry-credentials
       --docker-server=$CI_REGISTRY
       --docker-username=$CI_DEPLOY_USER
       --docker-password=$CI_DEPLOY_PASSWORD
       -o yaml --dry-run=client | kubectl apply -f -
-    - kubectl get pods
-#  script:
-##    - kubectl config get-contexts
-##    - kubectl config use-context path/to/agent/project:agent-name
-#    - kubectl get pods
-#    - cat k8s/core/deployment.yaml | envsubst > k8s/core/deployment.yaml && kubectl apply -f k8s/core/deployment.yaml
-#      && kubectl apply -f k8s/core/deployment.yaml
-#      && kubectl apply -f k8s/core/service.yaml
-#    - kubectl apply -f k8s/core/deployment.yaml
-#      && kubectl apply -f k8s/core/deployment.yaml
-#      && kubectl apply -f k8s/core/service.yaml
-#    - kubectl apply -f k8s/migrations/job.yaml
-#    - kubectl apply -f k8s/ingress.yaml
   script:
     - >
       helm upgrade --install devopschart infra/k8s/devopschart
       --set core.image.repository=$CI_REGISTRY_IMAGE/core
+      --set core.image.tag=$CI_PIPELINE_IID
       --set migrations.image.repository=$CI_REGISTRY_IMAGE/migrations
-      --set core.image.tag=3
-      --set migrations.image.tag=22
+      --set migrations.image.tag=$CI_PIPELINE_IID
       --wait
