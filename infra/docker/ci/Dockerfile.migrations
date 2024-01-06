@@ -2,5 +2,5 @@ FROM migrate/migrate
 
 COPY ./infra/postgres/migrations /db
 
-ENTRYPOINT ["migrate", "-path", "/db", "-database", "postgres://wallet:wallet@pg-service.svc.cluster.local:5432/wallet?sslmode=disable"]
+ENTRYPOINT ["migrate", "-path", "/db", "-database", "postgres://wallet:wallet@wallet-pg.svc.cluster.local:5432/wallet?sslmode=disable"]
 CMD up
