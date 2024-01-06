@@ -22,6 +22,6 @@ pg:
   containerPort: 5432
   servicePort: 5432
   image:
-    repository: ""
-    tag: ""
+    repository: postgres
+    tag: 14-alpine
 
