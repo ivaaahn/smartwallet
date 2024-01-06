@@ -2,38 +2,38 @@ stages:
   - build
   - deploy
 
-#.build:
-#  stage: build
-#  image: docker:dind
-#  services:
-#    - docker:dind
-#  variables:
-#    IMAGE_NAME: ""
-#    IMAGE_TAG: ""
-#    DOCKERFILE_PATH: ""
-#  before_script:
-#    - i=0; while [ "$i" -lt 12 ]; do docker info && break; sleep 5; i=$(( i + 1 )) ; done
-#    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
-#  script:
-#    - docker build -f $DOCKERFILE_PATH -t $IMAGE_NAME:$IMAGE_TAG .
-#  after_script:
-#    - docker push $IMAGE_NAME:$IMAGE_TAG
-#
-#build-core:
-#  stage: build
-#  extends: .build
-#  variables:
-#    IMAGE_NAME: $CI_REGISTRY_IMAGE/core
-#    IMAGE_TAG: $CI_PIPELINE_IID
-#    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile"
-#
-#build-migrations:
-#  stage: build
-#  extends: .build
-#  variables:
-#    IMAGE_NAME: $CI_REGISTRY_IMAGE/migrations
-#    IMAGE_TAG: $CI_PIPELINE_IID
-#    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile.migrations"
+.build:
+  stage: build
+  image: docker:dind
+  services:
+    - docker:dind
+  variables:
+    IMAGE_NAME: ""
+    IMAGE_TAG: ""
+    DOCKERFILE_PATH: ""
+  before_script:
+    - i=0; while [ "$i" -lt 12 ]; do docker info && break; sleep 5; i=$(( i + 1 )) ; done
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -f $DOCKERFILE_PATH -t $IMAGE_NAME:$IMAGE_TAG .
+  after_script:
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+
+build-core:
+  stage: build
+  extends: .build
+  variables:
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/core
+    IMAGE_TAG: $CI_PIPELINE_IID
+    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile"
+
+build-migrations:
+  stage: build
+  extends: .build
+  variables:
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/migrations
+    IMAGE_TAG: $CI_PIPELINE_IID
+    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile.migrations"
 
 deploy:
   stage: deploy
@@ -50,7 +50,7 @@ deploy:
     - >
       helm upgrade --install devopschart infra/k8s/devopschart
       --set core.image.repository=$CI_REGISTRY_IMAGE/core
-      --set core.image.tag=26
+      --set core.image.tag=$CI_PIPELINE_IID
       --set migrations.image.repository=$CI_REGISTRY_IMAGE/migrations
-      --set migrations.image.tag=26
+      --set migrations.image.tag=$CI_PIPELINE_IID
       --wait
