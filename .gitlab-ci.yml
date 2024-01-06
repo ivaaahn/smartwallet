@@ -44,7 +44,6 @@ deploy:
   image:
     name: dtzar/helm-kubectl:3.13.0
   before_script:
-    - kubectl version
     - >
       kubectl create secret docker-registry registry-credentials
       --docker-server=$CI_REGISTRY
