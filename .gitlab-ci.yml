@@ -42,7 +42,7 @@ build-migrations:
 deploy:
   stage: deploy
   image:
-    name: dtzar/helm-kubectl:latest
+    name: dtzar/helm-kubectl:3.13.0
   before_script:
     - kubectl version
     - kubectl get pods
