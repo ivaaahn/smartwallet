@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: {{ include "devopschart.fullname" . }}-core
 data:
-  .env: PG_DSN="postgresql://wallet:wallet@wallet-pg.svc.cluster.local:5432/wallet"
+  .env: PG_DSN="postgresql://wallet:wallet@wallet-pg:5432/wallet"
