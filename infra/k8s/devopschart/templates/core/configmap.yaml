@@ -3,5 +3,4 @@ kind: ConfigMap
 metadata:
   name: {{ include "devopschart.fullname" . }}-core
 data:
-  {{ .Values.core.config.fileName }}: |-
-{{ .Files.Get "configs/core/.env" | indent 4}}
+  PG_DSN: "postgresql://wallet:wallet@wallet-pg.svc.cluster.local:5432/wallet"
