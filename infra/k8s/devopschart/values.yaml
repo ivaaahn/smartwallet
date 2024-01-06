@@ -1,0 +1,27 @@
+nameOverride: wallet
+fullnameOverride: wallet
+
+core:
+  containerPort: 8080
+  servicePort: 80
+  image:
+    repository: ""
+    tag: ""
+
+  config:
+    volumeName: wallet-configmap-volume
+    volumeMountPath: /app/etc/
+    fileName: .env
+
+migrations:
+  image:
+    repository: ""
+    tag: ""
+
+pg:
+  containerPort: 5432
+  servicePort: 5432
+  image:
+    repository: ""
+    tag: ""
+

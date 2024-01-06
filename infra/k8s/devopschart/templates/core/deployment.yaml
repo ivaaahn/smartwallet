@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "devopschart.fullname" . }}-core
+  labels:
+    {{- include "devopschart.core.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "devopschart.core.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "devopschart.core.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "devopschart.fullname" . }}-core
+          image: "{{ .Values.core.image.repository }}:{{ .Values.core.image.tag}}"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: {{ .Values.core.containerPort }}
+              protocol: TCP
+          env:
+            - name: CONFIG_PATH
+              value: "{{ .Values.core.config.volumeMountPath }}{{.Values.core.config.fileName}}"
+          volumeMounts:
+            - name: {{ .Values.core.config.volumeName }}
+              mountPath: {{ .Values.core.config.volumeMountPath }}
+              readOnly: true
+      volumes:
+        - name: {{ .Values.core.config.volumeName }}
+          configMap:
+            name: {{ include "devopschart.fullname" . }}-configmap

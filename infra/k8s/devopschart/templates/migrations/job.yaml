@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "devopschart.fullname" . }}-migrations
+  labels:
+    {{- include "devopschart.migrations.labels" . | nindent 4 }}
+spec:
+  activeDeadlineSeconds: 600
+  ttlSecondsAfterFinished: 120
+  template:
+    metadata:
+      labels:
+        {{- include "devopschart.migrations.selectorLabels" . | nindent 4 }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: {{ include "devopschart.fullname" . }}-migrations
+          image: "{{ .Values.migrations.image.repository }}:{{ .Values.migrations.image.tag}}"
+          imagePullPolicy: Always

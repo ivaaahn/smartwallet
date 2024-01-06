@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devopschart.fullname" . }}-core
+data:
+  {{ .Values.api.config.filename }}: |-
+{{ .Files.Get "configs/core/.env" | indent 4}}

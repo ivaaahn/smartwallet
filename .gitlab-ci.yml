@@ -1,0 +1,71 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  CONFIG_PATH: docker/ci/.env
+
+
+.build:
+  stage: build
+  image: docker:dind
+  services:
+    - docker:dind
+  variables:
+    IMAGE_NAME: ""
+    IMAGE_TAG: ""
+    DOCKERFILE_PATH: ""
+  before_script:
+    - i=0; while [ "$i" -lt 12 ]; do docker info && break; sleep 5; i=$(( i + 1 )) ; done
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -f $DOCKERFILE_PATH -t $IMAGE_NAME:$IMAGE_TAG .
+  after_script:
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+
+build-core:
+  stage: build
+  extends: .build
+  variables:
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/core
+    IMAGE_TAG: $CI_PIPELINE_IID
+    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile"
+
+build-migrations:
+  stage: build
+  extends: .build
+  variables:
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/migrations
+    IMAGE_TAG: $CI_PIPELINE_IID
+    DOCKERFILE_PATH: "infra/docker/ci/Dockerfile.migrations"
+
+deploy:
+  stage: deploy
+  image:
+    name: dtzar/helm-kubectl:latest
+  before-script:
+    - >
+      kubectl create secret docker-registry registry-credentials
+      --docker-server=${CI_REGISTRY}
+      --docker-username=${CI_DEPLOY_USER}
+      --docker-password=${CI_DEPLOY_PASSWORD}
+      -o yaml --dry-run=client | kubectl apply -f -
+#  script:
+##    - kubectl config get-contexts
+##    - kubectl config use-context path/to/agent/project:agent-name
+#    - kubectl get pods
+#    - cat k8s/core/deployment.yaml | envsubst > k8s/core/deployment.yaml && kubectl apply -f k8s/core/deployment.yaml
+#      && kubectl apply -f k8s/core/deployment.yaml
+#      && kubectl apply -f k8s/core/service.yaml
+#    - kubectl apply -f k8s/core/deployment.yaml
+#      && kubectl apply -f k8s/core/deployment.yaml
+#      && kubectl apply -f k8s/core/service.yaml
+#    - kubectl apply -f k8s/migrations/job.yaml
+#    - kubectl apply -f k8s/ingress.yaml
+  script:
+    - >
+      helm upgrade --install devopschart infra/k8s/devopschart
+      --set core.image.tag=$CI_PIPELINE_IID
+      --set migrations.image.tag=$CI_PIPELINE_IID
+      --set ingress.domain=$DOMAIN
+      --wait
