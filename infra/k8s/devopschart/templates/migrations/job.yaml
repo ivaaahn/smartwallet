@@ -7,13 +7,16 @@ metadata:
 spec:
   activeDeadlineSeconds: 600
   ttlSecondsAfterFinished: 120
+  backoffLimit: 0
   template:
     metadata:
       labels:
-        {{- include "devopschart.migrations.selectorLabels" . | nindent 8 }}
+        {{- include "devopschart.migrations.labels" . | nindent 8 }}
     spec:
       restartPolicy: Never
       containers:
         - name: {{ include "devopschart.fullname" . }}-migrations
           image: "{{ .Values.migrations.image.repository }}:{{ .Values.migrations.image.tag}}"
+          command: ["/bin/sh", "-c"]
+          args: ["sleep 1"]
           imagePullPolicy: Always
