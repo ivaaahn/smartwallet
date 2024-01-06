@@ -45,13 +45,13 @@ deploy:
     name: dtzar/helm-kubectl:3.13.0
   before_script:
     - kubectl version
-    - kubectl get pods
     - >
       kubectl create secret docker-registry registry-credentials
       --docker-server=$CI_REGISTRY
       --docker-username=$CI_DEPLOY_USER
       --docker-password=$CI_DEPLOY_PASSWORD
       -o yaml --dry-run=client | kubectl apply -f -
+    - kubectl get pods
 #  script:
 ##    - kubectl config get-contexts
 ##    - kubectl config use-context path/to/agent/project:agent-name
